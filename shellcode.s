@@ -8,8 +8,8 @@ sh:
 
 _start:
     ldr x0, =sh
-    mov x1, #0
-    mov x2, #0
+    mov x1, xzr
+    mov x2, xzr
     mov x8, #221
     svc #0
 
