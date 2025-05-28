@@ -1,13 +1,5 @@
 .global _start
 
-.data
-    sockaddr:
-        .byte 0x02, 0x00
-        .byte 0x15, 0xb3
-        .word 0x00000000
-
-.text
-
 // rbp - 0x8                         server socket
 // rbp - 0x18                        sockaddr_in
 // rbp - 0x20                        client socket
@@ -46,6 +38,12 @@ _start:
 
     str x0, [x20, #8]       // Store client connection
 
+    ldr x0, [x20, #8]       // Move client for write
+    adr x1, hello           // Message
+    mov x2, #7              // Message length
+    mov x8, #64             // Syscall for write
+    svc #0x1337
+
     ldr x0, [x20, #8]       // Move client connection for close
     mov x8, #57             // Syscall for close
     svc #0x1337
@@ -57,3 +55,13 @@ _start:
     mov x0, xzr
     mov w8, #93
     svc #0
+
+.section .data
+    sockaddr:
+        .byte 0x02, 0x00
+        .byte 0x15, 0xb3
+        .word 0x00000000
+
+.section .text
+    hello:
+        .asciz "Hello!"
